@@ -143,4 +143,5 @@ class AttestationHelper(object):
         """
         if not participants:
             return {}
-        return self.attestation.validate_tokens(participants)
+        result = {k: self.attestation.validate_token(v) for k,v in participants.items()}
+        return result

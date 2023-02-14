@@ -88,7 +88,7 @@ class AttestationHelper(object):
                 elif prop == VerifierProp.ENV:
                     env = Env.mapping.get(value)
                 elif prop == VerifierProp.DEVICES:
-                    assert isinstance(v, list)
+                    assert isinstance(value, list)
                     for d in value:
                         dv = Device.mapping.get(d)
                         if not dv:
@@ -102,16 +102,16 @@ class AttestationHelper(object):
                 raise ValueError("Environment is not specified for verifier")
             if not devices:
                 raise ValueError("Devices is not specified for verifier")
-            if not url:
+            if url is None:
                 raise ValueError("Url is not specified for verifier")
-            if not appraisal_policy_file:
+            if appraisal_policy_file is None:
                 raise ValueError("Appraisal policy file is not specified for verifier")
-            if not os.path.exists(appraisal_policy_file):
-                raise ValueError(f"Appraisal policy file '{appraisal_policy_file}' does not exist")
-            if not result_policy_file:
+            # if not os.path.exists(appraisal_policy_file):
+            #     raise ValueError(f"Appraisal policy file '{appraisal_policy_file}' does not exist")
+            if result_policy_file is None:
                 raise ValueError("Result policy file is not specified for verifier")
-            if not os.path.exists(result_policy_file):
-                raise ValueError(f"Result policy file '{result_policy_file}' does not exist")
+            # if not os.path.exists(result_policy_file):
+            #     raise ValueError(f"Result policy file '{result_policy_file}' does not exist")
             attestation.add_verifier(devices, env, url, appraisal_policy_file, result_policy_file)
 
     def reset_participant(self, participant_name: str):
@@ -132,7 +132,7 @@ class AttestationHelper(object):
 
     def validate_participants(
             self,
-            participants):
+            participants: Dict[str, str]) -> Dict[str, bool]:
         """Validate CC policies of specified participants against the requirement policy of the site.
 
         Args:

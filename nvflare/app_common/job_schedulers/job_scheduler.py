@@ -347,7 +347,7 @@ class DefaultJobScheduler(JobSchedulerSpec, FLComponent):
                     result = "scheduled"
                 self._update_schedule_history(job, result)
                 if rc == SCHEDULE_RESULT_OK:
-                    return job, sites_dispatch_info, failed_jobs, blocked_jobs
+                    return job, sites_dispatch_info
                 elif rc == SCHEDULE_RESULT_NO_RESOURCE:
                     failed_jobs.append(job)
                 else:

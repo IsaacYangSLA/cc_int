@@ -134,7 +134,7 @@ class AttestationManager(FLComponent):
             return f"missing '{FLContextKey.CLIENT_RESOURCE_SPECS}' prop in fl_ctx"
 
         # add "participants" to each client's resource spec so the client side can validate
-        for client_name, spec in resource_specs:
+        for client_name, spec in resource_specs.items():
             if not isinstance(spec, dict):
                 return f"bad resource spec for client {client_name}: expect dict but got {type(spec)}"
             spec[_KEY_PARTICIPANTS] = participant_tokens

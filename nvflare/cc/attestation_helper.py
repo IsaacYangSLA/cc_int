@@ -11,7 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import os.path
+# import os.path
+
+import logging
+import os
 from typing import Dict
 from nv_attestation_sdk.attestation import Attestation, Environment, Devices
  
@@ -75,6 +78,8 @@ class AttestationHelper(object):
         attestation.set_name(site_name)
         self.attestation = attestation
         self.token = None
+        self.logger = logging.getLogger(self.__class__.__name__)
+        self.logger.info(f"Current working directory {os.getcwd()}")
         for v in verifiers:
             assert isinstance(v, dict)
             url = None
@@ -88,12 +93,10 @@ class AttestationHelper(object):
                 elif prop == VerifierProp.ENV:
                     env = Env.mapping.get(value)
                 elif prop == VerifierProp.DEVICES:
-                    assert isinstance(value, list)
-                    for d in value:
-                        dv = Device.mapping.get(d)
-                        if not dv:
-                            raise ValueError(f"invalid device '{d}'")
-                        devices += dv
+                    dv = Device.mapping.get(value)
+                    if not dv:
+                        raise ValueError(f"invalid device '{value}'")
+                    devices = dv
                 elif prop == VerifierProp.APPRAISAL_POLICY_FILE:
                     appraisal_policy_file = value
                 elif prop == VerifierProp.RESULT_POLICY_FILE:
@@ -106,13 +109,15 @@ class AttestationHelper(object):
                 raise ValueError("Url is not specified for verifier")
             if appraisal_policy_file is None:
                 raise ValueError("Appraisal policy file is not specified for verifier")
-            # if not os.path.exists(appraisal_policy_file):
-            #     raise ValueError(f"Appraisal policy file '{appraisal_policy_file}' does not exist")
+            if not os.path.exists(appraisal_policy_file):
+                raise ValueError(f"Appraisal policy file '{appraisal_policy_file}' does not exist")
+            appraisal_policy = open(appraisal_policy_file, "rt").read().rstrip()
             if result_policy_file is None:
                 raise ValueError("Result policy file is not specified for verifier")
-            # if not os.path.exists(result_policy_file):
-            #     raise ValueError(f"Result policy file '{result_policy_file}' does not exist")
-            attestation.add_verifier(devices, env, url, appraisal_policy_file, result_policy_file)
+            if not os.path.exists(result_policy_file):
+                raise ValueError(f"Result policy file '{result_policy_file}' does not exist")
+            result_policy = open(result_policy_file, "rt").read().rstrip()
+            attestation.add_verifier(devices, env, url, appraisal_policy, result_policy)
 
     def reset_participant(self, participant_name: str):
         pass
@@ -123,8 +128,10 @@ class AttestationHelper(object):
         Returns: error if any
         """
         ok = self.attestation.attest()
+        self.logger.info(f"attest {ok=}")
         if ok:
             self.token = self.attestation.get_token(self.site_name)
+            self.logger.info(f"token {self.token=}")
         return ok
 
     def get_token(self):
@@ -144,4 +151,5 @@ class AttestationHelper(object):
         if not participants:
             return {}
         result = {k: self.attestation.validate_token(v) for k,v in participants.items()}
+        self.logger.info(f"validate participants {result=}")
         return result

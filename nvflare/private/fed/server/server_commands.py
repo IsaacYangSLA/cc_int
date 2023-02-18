@@ -132,7 +132,6 @@ class GetTaskCommand(CommandProcessor):
         Returns: task data
 
         """
-
         shared_fl_ctx = data.get_header(ServerCommandKey.PEER_FL_CONTEXT)
         client = data.get_header(ServerCommandKey.FL_CLIENT)
         fl_ctx.set_peer_context(shared_fl_ctx)

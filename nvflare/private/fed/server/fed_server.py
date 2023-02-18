@@ -447,6 +447,7 @@ class FederatedServer(BaseServer, fed_service.FederatedTrainingServicer, admin_s
         task_id = ""
         shareable = None
         try:
+            time.sleep(3)
             with self.engine.lock:
                 job_id = shared_fl_ctx.get_prop(FLContextKey.CURRENT_RUN)
                 command_conn = self.engine.get_command_conn(str(job_id))

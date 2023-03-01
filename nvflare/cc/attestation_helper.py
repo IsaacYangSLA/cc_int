@@ -79,7 +79,7 @@ class AttestationHelper(object):
         self.attestation = attestation
         self.token = None
         self.logger = logging.getLogger(self.__class__.__name__)
-        self.logger.info(f"Current working directory {os.getcwd()}")
+        # self.logger.info(f"Current working directory {os.getcwd()}")
         for v in verifiers:
             assert isinstance(v, dict)
             url = None
@@ -130,7 +130,7 @@ class AttestationHelper(object):
         ok = self.attestation.attest()
         self.logger.info(f"attest {ok=}")
         self.token = self.attestation.get_token(self.site_name)
-        self.logger.info(f"token {self.token=}")
+        self.logger.info(f"CC - token from GPU attestation: {self.token[0:32]} ... ...")
         return True
 
     def get_token(self):
@@ -150,5 +150,5 @@ class AttestationHelper(object):
         if not participants:
             return {}
         result = {k: self.attestation.validate_token(v) for k,v in participants.items()}
-        self.logger.info(f"validate participants {result=}")
+        self.logger.info(f"CC - results from validating participants' tokens: {result}")
         return result

@@ -129,10 +129,9 @@ class AttestationHelper(object):
         """
         ok = self.attestation.attest()
         self.logger.info(f"attest {ok=}")
-        if ok:
-            self.token = self.attestation.get_token(self.site_name)
-            self.logger.info(f"token {self.token=}")
-        return ok
+        self.token = self.attestation.get_token(self.site_name)
+        self.logger.info(f"token {self.token=}")
+        return True
 
     def get_token(self):
         return self.token

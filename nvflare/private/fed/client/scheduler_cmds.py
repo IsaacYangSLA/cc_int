@@ -112,23 +112,18 @@ class StartJobProcessor(RequestProcessor):
 
         try:
             with engine.new_context() as fl_ctx:
-                print('1')
                 allocated_resources = resource_manager.allocate_resources(
                     resource_requirement=resource_spec, token=token, fl_ctx=fl_ctx
                 )
-                print('2')
             if allocated_resources:
-                print('3')
                 resource_consumer = _get_resource_consumer(engine)
                 resource_consumer.consume(allocated_resources)
-                print('4')
             result = engine.start_app(
                 job_id,
                 allocated_resource=allocated_resources,
                 token=token,
                 resource_manager=resource_manager,
             )
-            print('5')
         except Exception as e:
             result = f"{ERROR_MSG_PREFIX}: Start job execution exception: {secure_format_exception(e)}."
             if allocated_resources:

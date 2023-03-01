@@ -128,7 +128,7 @@ class AttestationHelper(object):
         Returns: error if any
         """
         ok = self.attestation.attest()
-        self.logger.info(f"attest {ok=}")
+        self.logger.info(f"CC - attest result (is valid?): {ok}")
         self.token = self.attestation.get_token(self.site_name)
         self.logger.info(f"CC - token from GPU attestation: {self.token[0:32]} ... ...")
         return True

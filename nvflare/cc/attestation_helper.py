@@ -116,8 +116,8 @@ class AttestationHelper(object):
                 raise ValueError("Result policy file is not specified for verifier")
             if not os.path.exists(result_policy_file):
                 raise ValueError(f"Result policy file '{result_policy_file}' does not exist")
-            result_policy = open(result_policy_file, "rt").read().rstrip()
-            attestation.add_verifier(devices, env, url, appraisal_policy, result_policy)
+            self.result_policy = open(result_policy_file, "rt").read().rstrip()
+            attestation.add_verifier(devices, env, url, appraisal_policy)
 
     def reset_participant(self, participant_name: str):
         pass
@@ -149,6 +149,6 @@ class AttestationHelper(object):
         """
         if not participants:
             return {}
-        result = {k: self.attestation.validate_token(v) for k,v in participants.items()}
+        result = {k: self.attestation.validate_token(v, self.result_policy) for k,v in participants.items()}
         self.logger.info(f"CC - results from validating participants' tokens: {result}")
         return result

@@ -149,6 +149,6 @@ class AttestationHelper(object):
         """
         if not participants:
             return {}
-        result = {k: self.attestation.validate_token(v, self.result_policy) for k,v in participants.items()}
+        result = {k: self.attestation.validate_token(self.result_policy, v) for k,v in participants.items()}
         self.logger.info(f"CC - results from validating participants' tokens: {result}")
         return result
